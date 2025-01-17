@@ -49,6 +49,9 @@ RUN mv gatk-4.6.1.0 /opt/gatk
 # Install SubChrom
 WORKDIR /opt/
 RUN git clone https://github.com/Shaohua-Lei/SubChrom.git
+WORKDIR /opt/SubChrom/data/
+RUN wget  --no-check-certificate https://zenodo.org/records/10155688/files/SNPmarker_hg38.zip
+RUN unzip SNPmarker_hg38.zip
 
 ENV PATH="/opt/gatk:/opt/SubChrom/scripts:${PATH}"
 
