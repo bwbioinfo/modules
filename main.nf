@@ -6,16 +6,19 @@ process CHROMPLOTTER {
     label 'process_cpu_med'
     label 'process_memory_med'
     label 'process_time_med'
-    errorStrategy { task.attempt <= 3 ? 'retry' : 'terminate' }
-
-    publishDir "output", mode: 'copy'
-
+    
     input:
-    tuple val(meta), path(in_bed), val(in_chrom)
+    tuple val(meta),
+        path(in_bed),
+        val(in_chrom)
 
     output:
-    tuple val(meta), path("*.svg"), optional: true,  emit: chromplot
-    path "versions.yml"           , emit: versions
+    tuple val(meta), 
+        path("*.svg"),
+        val(in_chrom),
+        optional: true,
+        emit: chromplot
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,7 +26,6 @@ process CHROMPLOTTER {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def threads = task.cpus
     """
     chromplotter \\
     ${args} \\
