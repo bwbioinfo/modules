@@ -8,8 +8,6 @@ process SAMTOOLS_TOBAM {
     label 'process_time_med'
     errorStrategy { task.attempt <= 3 ? 'retry' : 'terminate' }
 
-    publishDir "output", mode: 'copy'
-
     input:
     tuple val(meta), path(in_sam)
 
@@ -21,7 +19,7 @@ process SAMTOOLS_TOBAM {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: '-b'
+    def args = task.ext.args ?: '-bS'
     def prefix = task.ext.prefix ?: "${meta.id}"
     def threads = task.cpus
     """
@@ -47,14 +45,12 @@ process SAMTOOLS_SORT {
     label 'process_time_med'
     errorStrategy { task.attempt <= 3 ? 'retry' : 'terminate' }
 
-    publishDir "output", mode: 'copy'
-
     input:
     tuple val(meta), path(in_bam)
 
     output:
     tuple val(meta), path("*.sorted.bam"), emit: sortedbam
-    path "versions.yml"           , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -87,9 +83,7 @@ process SAMTOOLS_INDEX {
     label 'process_memory_med'
     label 'process_time_med'
     errorStrategy { task.attempt <= 3 ? 'retry' : 'terminate' }
-
-    publishDir "output", mode: 'copy'
-
+    
     input:
     tuple val(meta), path(in_bam)
 
