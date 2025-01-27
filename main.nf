@@ -1,11 +1,9 @@
 process CHROMPLOTTER {
     // TODO : SET FIXED VERSION WHEN PIPELINE IS STABLE
-    container 'ghcr.io/bwbioinfo/rs-chromplotter:latest'
+    container 'ghcr.io/chusj-pigu/rs-chromplotter:latest'
 
     tag "$meta.id"
-    label 'process_cpu_med'
-    label 'process_memory_med'
-    label 'process_time_med'
+    label 'process_medium'
     
     input:
     tuple val(meta),
@@ -14,7 +12,7 @@ process CHROMPLOTTER {
 
     output:
     tuple val(meta), 
-        path("*.svg"),
+        path("*.{svg,png}"),
         val(in_chrom),
         optional: true,
         emit: chromplot
@@ -31,7 +29,7 @@ process CHROMPLOTTER {
     ${args} \\
     --bedfile ${in_bed} \\
     --chrom ${in_chrom} \\
-    --output ${prefix}_${in_chrom}.svg
+    --output ${prefix}_${in_chrom}.png
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
